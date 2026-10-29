@@ -1,5 +1,13 @@
 import { plainToInstance } from 'class-transformer';
-import { IsIn, IsInt, IsString, Max, Min, validateSync } from 'class-validator';
+import {
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Max,
+  Min,
+  validateSync,
+} from 'class-validator';
 
 class EnvironmentVariables {
   @IsIn(['development', 'test', 'production'])
@@ -9,6 +17,10 @@ class EnvironmentVariables {
   @Min(1)
   @Max(65535)
   PORT = 3000;
+
+  @IsString()
+  @IsNotEmpty()
+  DATABASE_URL!: string;
 
   @IsString()
   DB_HOST = 'localhost';
@@ -70,7 +82,10 @@ export function validateEnvironment(config: Record<string, unknown>) {
   if (errors.length > 0) {
     throw new Error(
       `Invalid environment configuration: ${errors
-        .map((error) => Object.keys(error.constraints ?? {}).join(', '))
+        .map(
+          (error) =>
+            `${error.property} (${Object.keys(error.constraints ?? {}).join(', ')})`,
+        )
         .join('; ')}`,
     );
   }
