@@ -32,5 +32,5 @@ export class CreateRoleDto {
   @Type(() => Number)
   @IsInt({ each: true })
   @Min(1, { each: true })
-  permissionIds: number[] = [];
+  permission_ids: number[] = [];
 }

@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
+import { UserStatus } from '../users/user-status.enum.js';
 import { UserEntity } from '../users/user.entity.js';
 import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface.js';
 
@@ -30,10 +31,13 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new UnauthorizedException('Invalid access token');
     }
     const user = await this.users.findOne({
-      where: { id: payload.sub },
+      where: { id: payload.sub, deleted: false },
       relations: { role: { permissions: true } },
     });
     if (!user) throw new UnauthorizedException('User no longer exists');
+    if (user.status !== UserStatus.ACTIVE) {
+      throw new UnauthorizedException('Your account is not active');
+    }
 
     return {
       id: user.id,

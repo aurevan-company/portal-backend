@@ -79,10 +79,10 @@ export class RefreshTokenService {
   }
 
   async rotate(refreshToken: string): Promise<{
-    accessToken: string;
-    refreshToken: string;
-    tokenType: 'Bearer';
-    expiresIn: string;
+    access_token: string;
+    refresh_token: string;
+    token_type: 'Bearer';
+    expires_in: string;
   }> {
     let payload: RefreshPayload;
 
@@ -129,10 +129,10 @@ export class RefreshTokenService {
     const newRefreshToken = await this.issue(payload.sub);
 
     return {
-      accessToken,
-      refreshToken: newRefreshToken,
-      tokenType: 'Bearer',
-      expiresIn: accessExpiresIn,
+      access_token: accessToken,
+      refresh_token: newRefreshToken,
+      token_type: 'Bearer',
+      expires_in: accessExpiresIn,
     };
   }
 

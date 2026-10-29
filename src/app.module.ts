@@ -7,6 +7,8 @@ import { UsersModule } from './modules/users/users.module.js';
 import { RolesModule } from './modules/roles/roles.module.js';
 import { PermissionsModule } from './modules/permissions/permissions.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { OrganizationsModule } from './modules/organizations/organizations.module.js';
+import { EmployeesModule } from './modules/employees/employees.module.js';
 import { ResponseEnvelopeInterceptor } from './common/interceptors/response.interceptor.js';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
 
@@ -22,6 +24,8 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
     RolesModule,
     PermissionsModule,
     AuthModule,
+    OrganizationsModule,
+    EmployeesModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: ResponseEnvelopeInterceptor },

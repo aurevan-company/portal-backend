@@ -88,7 +88,7 @@ export class RolesService {
       throw new ConflictException('Role code already exists');
     }
 
-    const permissions = await this.getPermissions(dto.permissionIds ?? []);
+    const permissions = await this.getPermissions(dto.permission_ids ?? []);
 
     const role = this.roles.create({
       code,
@@ -125,7 +125,7 @@ export class RolesService {
       throw new ConflictException('Role code already exists');
     }
 
-    const permissions = await this.getPermissions(dto.permissionIds ?? []);
+    const permissions = await this.getPermissions(dto.permission_ids ?? []);
 
     role.code = code;
     role.name = dto.name.trim();

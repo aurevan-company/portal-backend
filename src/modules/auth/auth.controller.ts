@@ -33,7 +33,7 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   refresh(@Body() dto: RefreshTokenDto) {
-    return this.refreshTokens.rotate(dto.refreshToken);
+    return this.refreshTokens.rotate(dto.refresh_token);
   }
 
   @Post('logout')
@@ -43,7 +43,7 @@ export class AuthController {
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: RefreshTokenDto,
   ) {
-    await this.logoutService.execute(user.id, dto.refreshToken);
+    await this.logoutService.execute(user.id, dto.refresh_token);
     return { message: 'Logged out successfully' };
   }
 }

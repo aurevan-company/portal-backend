@@ -42,6 +42,7 @@ Keep it flat: controller → service → TypeORM repository. No domain/mapper/re
 
 ## Conventions
 
+- **snake_case everywhere data crosses a boundary**: DB tables/columns, JSON request/response fields, query params, and the entity/DTO property names that produce them (`owner_id`, `logo_url`, `created_at`, `updated_user`, `permission_ids`, `access_token`, pagination `total_pages`). Do not use camelCase for these; entity properties are snake_case too so responses serialize as-is. Local variables, functions, and classes stay camelCase/PascalCase.
 - Global prefix `api`; global `ValidationPipe` uses `whitelist` + `forbidNonWhitelisted`, so DTOs must declare every accepted field.
 - `ResponseEnvelopeInterceptor` wraps every response and `HttpExceptionFilter` formats errors — controllers just return data / throw Nest exceptions.
 - Auth: JWT access + rotating refresh tokens; one role per user, many permissions per role. Never add a public endpoint that assigns roles.
