@@ -4,7 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from '../users/user.entity.js';
@@ -18,8 +18,11 @@ const toNumber = {
 
 @Entity({ name: 'organizations' })
 export class OrganizationEntity {
-  @PrimaryGeneratedColumn('identity', {
+  // PrimaryGeneratedColumn('identity') has no `transformer` option, so declare
+  // the identity through PrimaryColumn to keep the bigint -> number transformer.
+  @PrimaryColumn({
     type: 'bigint',
+    generated: 'identity',
     generatedIdentity: 'ALWAYS',
     transformer: toNumber,
   })
