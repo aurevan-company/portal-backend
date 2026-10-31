@@ -13,7 +13,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator.js';
+import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface.js';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { PermissionsGuard } from '../../common/guards/permissions.guard.js';
 import { CreateOrganizationDto } from './dto/create-organization.dto.js';
@@ -28,8 +30,11 @@ export class OrganizationsController {
 
   @Post()
   @RequirePermissions('organizations.create')
-  create(@Body() dto: CreateOrganizationDto) {
-    return this.organizations.create(dto);
+  create(
+    @Body() dto: CreateOrganizationDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.organizations.create(dto, user.id);
   }
 
   @Get()
@@ -49,14 +54,18 @@ export class OrganizationsController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateOrganizationDto,
+    @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.organizations.update(id, dto);
+    return this.organizations.update(id, dto, user.id);
   }
 
   @Delete(':id')
   @RequirePermissions('organizations.delete')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.organizations.remove(id);
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.organizations.remove(id, user.id);
   }
 }

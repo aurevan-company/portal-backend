@@ -9,6 +9,8 @@ import {
 import { LoginService } from './login.service.js';
 import { RefreshTokenService } from './refresh-token.service.js';
 import { LogoutService } from './logout.service.js';
+import { ChangePasswordService } from './change-password.service.js';
+import { ChangePasswordDto } from './dto/change-password.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RefreshTokenDto } from './dto/refresh-token.dto.js';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
@@ -21,6 +23,7 @@ export class AuthController {
     private readonly loginService: LoginService,
     private readonly refreshTokens: RefreshTokenService,
     private readonly logoutService: LogoutService,
+    private readonly changePasswordService: ChangePasswordService,
   ) {}
 
   @Post('login')
@@ -34,6 +37,22 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   refresh(@Body() dto: RefreshTokenDto) {
     return this.refreshTokens.rotate(dto.refresh_token);
+  }
+
+  @Post('change-password')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async changePassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    await this.changePasswordService.execute(
+      user.id,
+      user.email,
+      dto.current_password,
+      dto.new_password,
+    );
+    return { message: 'Password changed successfully' };
   }
 
   @Post('logout')

@@ -1,16 +1,21 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
+import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface.js';
+import { RefreshTokenEntity } from '../auth/refresh-token.entity.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { UserStatus } from './user-status.enum.js';
 import { UserEntity } from './user.entity.js';
+
+const SUPER_ADMIN_ROLE = 'SUPER_ADMIN';
 
 const isUniqueViolation = (error: unknown) =>
   !!error &&
@@ -32,6 +37,8 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly users: Repository<UserEntity>,
+    @InjectRepository(RefreshTokenEntity)
+    private readonly refreshTokens: Repository<RefreshTokenEntity>,
   ) {}
 
   async create(dto: CreateUserDto) {
@@ -83,7 +90,13 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, dto: UpdateUserDto, actor: string) {
+  async update(id: number, dto: UpdateUserDto, actor: AuthenticatedUser) {
+    // Only SUPER_ADMIN may set a password here; users change their own via
+    // POST /auth/change-password.
+    if (dto.new_password !== undefined && actor.role !== SUPER_ADMIN_ROLE) {
+      throw new ForbiddenException('Only SUPER_ADMIN can change passwords');
+    }
+
     const user = await this.findOne(id);
 
     if (dto.firstname !== undefined) user.firstname = dto.firstname.trim();
@@ -91,10 +104,21 @@ export class UsersService {
     if (dto.email !== undefined) user.email = dto.email.trim().toLowerCase();
     if (dto.phone !== undefined) user.phone = dto.phone.trim();
     if (dto.status !== undefined) user.status = dto.status;
-    user.updated_user = actor;
+    if (dto.new_password !== undefined) {
+      user.password_hash = await bcrypt.hash(dto.new_password, 12);
+    }
+    user.updated_user = actor.email;
 
     try {
-      return await this.users.save(user);
+      const saved = await this.users.save(user);
+      if (dto.new_password !== undefined) {
+        // Force the user to log in again with the new password.
+        await this.refreshTokens.update(
+          { userId: id, revokedAt: IsNull() },
+          { revokedAt: new Date() },
+        );
+      }
+      return saved;
     } catch (error) {
       if (isUniqueViolation(error)) {
         throw new ConflictException(duplicateMessage(error));

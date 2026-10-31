@@ -3,12 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { PermissionsGuard } from '../../common/guards/permissions.guard.js';
+import { RefreshTokenEntity } from '../auth/refresh-token.entity.js';
 import { UserEntity } from './user.entity.js';
 import { UsersController } from './users.controller.js';
 import { UsersService } from './users.service.js';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [TypeOrmModule.forFeature([UserEntity, RefreshTokenEntity])],
   controllers: [UsersController],
   providers: [UsersService, JwtAuthGuard, PermissionsGuard],
   exports: [UsersService],
