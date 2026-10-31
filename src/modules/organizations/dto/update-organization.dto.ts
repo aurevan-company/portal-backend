@@ -1,23 +1,22 @@
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsEmail,
   IsEnum,
   IsInt,
+  IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   Length,
+  Max,
   MaxLength,
   Min,
 } from 'class-validator';
 import { OrganizationStatus } from '../organization-status.enum.js';
 
-// email, description and logo_url accept null to clear the value.
+// Nullable fields accept null to clear the value.
 export class UpdateOrganizationDto {
-  @IsOptional()
-  @IsString()
-  @Length(1, 150)
-  name?: string;
-
   @IsOptional()
   @Type(() => Number)
   @IsInt()
@@ -25,9 +24,28 @@ export class UpdateOrganizationDto {
   owner_id?: number;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  parent_id?: number | null;
+
+  @IsOptional()
   @IsString()
-  @Length(5, 20)
-  phone?: string;
+  @Length(1, 150)
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  logo_url?: string | null;
+
+  @IsOptional()
+  @IsString()
+  description?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @Length(5, 30)
+  phone?: string | null;
 
   @IsOptional()
   @IsEmail()
@@ -36,13 +54,45 @@ export class UpdateOrganizationDto {
 
   @IsOptional()
   @IsString()
-  description?: string | null;
+  @MaxLength(500)
+  address?: string | null;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 7 })
+  @Min(-90)
+  @Max(90)
+  latitude?: number | null;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 7 })
+  @Min(-180)
+  @Max(180)
+  longitude?: number | null;
 
   @IsOptional()
   @IsString()
-  logo_url?: string | null;
+  @MaxLength(255)
+  google_place_id?: string | null;
+
+  @IsOptional()
+  @IsString()
+  facebook_url?: string | null;
+
+  @IsOptional()
+  @IsString()
+  instagram_url?: string | null;
+
+  @IsOptional()
+  @IsObject()
+  working_hours?: Record<string, unknown> | null;
 
   @IsOptional()
   @IsEnum(OrganizationStatus)
   status?: OrganizationStatus;
+
+  @IsOptional()
+  @IsBoolean()
+  is_active?: boolean;
 }

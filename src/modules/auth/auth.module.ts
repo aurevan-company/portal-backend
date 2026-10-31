@@ -10,6 +10,7 @@ import { RefreshTokenEntity } from './refresh-token.entity.js';
 import { LoginService } from './login.service.js';
 import { RefreshTokenService } from './refresh-token.service.js';
 import { LogoutService } from './logout.service.js';
+import { ChangePasswordService } from './change-password.service.js';
 import { AuthController } from './auth.controller.js';
 import { JwtStrategy } from './jwt.strategy.js';
 
@@ -38,7 +39,13 @@ import { JwtStrategy } from './jwt.strategy.js';
     }),
   ],
   controllers: [AuthController],
-  providers: [LoginService, RefreshTokenService, LogoutService, JwtStrategy],
+  providers: [
+    LoginService,
+    RefreshTokenService,
+    LogoutService,
+    ChangePasswordService,
+    JwtStrategy,
+  ],
   exports: [JwtModule, PassportModule, RefreshTokenService],
 })
 export class AuthModule {}

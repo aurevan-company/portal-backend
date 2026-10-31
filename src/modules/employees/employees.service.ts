@@ -116,6 +116,7 @@ export class EmployeesService {
         id: organization_id,
         deleted: false,
         status: OrganizationStatus.ACTIVE,
+        is_active: true,
       },
       select: { id: true },
     });

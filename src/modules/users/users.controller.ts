@@ -53,7 +53,7 @@ export class UsersController {
     @Body() dto: UpdateUserDto,
     @CurrentUser() actor: AuthenticatedUser,
   ) {
-    return this.users.update(id, dto, actor.email);
+    return this.users.update(id, dto, actor);
   }
 
   @Delete(':id')
