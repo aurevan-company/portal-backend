@@ -79,6 +79,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       if (typeof body === 'object' && body !== null) {
         const exceptionBody = body as Record<string, unknown>;
 
+        // Домэйн алдаа: throw new XException({ code: 'CATEGORY_ALREADY_EXISTS' }).
+        if (typeof exceptionBody.code === 'string') {
+          code = exceptionBody.code;
+        }
+
         // class-validator-ийн алдаануудыг details-д оруулна.
         if (Array.isArray(exceptionBody.message)) {
           details = exceptionBody.message;

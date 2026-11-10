@@ -9,6 +9,7 @@ import { PermissionsModule } from './modules/permissions/permissions.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { OrganizationsModule } from './modules/organizations/organizations.module.js';
 import { EmployeesModule } from './modules/employees/employees.module.js';
+import { CatalogModule } from './modules/catalog/catalog.module.js';
 import { ResponseEnvelopeInterceptor } from './common/interceptors/response.interceptor.js';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
 
@@ -26,6 +27,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
     AuthModule,
     OrganizationsModule,
     EmployeesModule,
+    CatalogModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: ResponseEnvelopeInterceptor },
