@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS organizations (
 
   working_hours JSONB NULL,
 
-  status VARCHAR(30) NOT NULL DEFAULT 'pending',
+  status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   deleted BOOLEAN NOT NULL DEFAULT FALSE,
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS organizations (
     FOREIGN KEY (updated_by) REFERENCES users(id),
 
   CONSTRAINT chk_organizations_status
-    CHECK (status IN ('pending', 'active', 'suspended')),
+    CHECK (status IN ('PENDING', 'ACTIVE', 'SUSPENDED')),
 
   CONSTRAINT chk_organizations_latitude
     CHECK (latitude IS NULL OR latitude BETWEEN -90 AND 90),
