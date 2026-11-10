@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsDateString,
   IsEmail,
   IsEnum,
   IsInt,
@@ -9,9 +10,10 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import { EmployeePosition } from '../employee-position.enum.js';
 import { EmployeeStatus } from '../employee-status.enum.js';
 
-// email and position accept null to clear the value.
+// branch_id, email, position, hired_at and terminated_at accept null to clear the value.
 export class UpdateEmployeeDto {
   @IsOptional()
   @Type(() => Number)
@@ -23,16 +25,21 @@ export class UpdateEmployeeDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  branch_id?: number;
+  branch_id?: number | null;
 
   @IsOptional()
   @IsString()
-  @Length(1, 150)
-  name?: string;
+  @Length(1, 100)
+  firstname?: string;
 
   @IsOptional()
   @IsString()
-  @Length(5, 20)
+  @Length(1, 100)
+  lastname?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(5, 30)
   phone?: string;
 
   @IsOptional()
@@ -41,9 +48,16 @@ export class UpdateEmployeeDto {
   email?: string | null;
 
   @IsOptional()
-  @IsString()
-  @MaxLength(100)
-  position?: string | null;
+  @IsEnum(EmployeePosition)
+  position?: EmployeePosition | null;
+
+  @IsOptional()
+  @IsDateString({ strict: true })
+  hired_at?: string | null;
+
+  @IsOptional()
+  @IsDateString({ strict: true })
+  terminated_at?: string | null;
 
   @IsOptional()
   @IsEnum(EmployeeStatus)

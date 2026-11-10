@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { PaginationQueryDto } from '../../../common/pagination/pagination-query.dto.js';
+import { EmployeePosition } from '../employee-position.enum.js';
 import { EmployeeStatus } from '../employee-status.enum.js';
 
 export class EmployeeQueryDto extends PaginationQueryDto {
@@ -19,6 +20,10 @@ export class EmployeeQueryDto extends PaginationQueryDto {
   @IsOptional()
   @IsEnum(EmployeeStatus)
   status?: EmployeeStatus;
+
+  @IsOptional()
+  @IsEnum(EmployeePosition)
+  position?: EmployeePosition;
 
   @IsOptional()
   @IsString()

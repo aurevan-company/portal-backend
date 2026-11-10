@@ -7,14 +7,9 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { toNumber } from '../../common/transformers/bigint-number.transformer.js';
 import { UserEntity } from '../users/user.entity.js';
 import { OrganizationStatus } from './organization-status.enum.js';
-
-// pg returns BIGINT and DECIMAL as strings; expose them as numbers in JSON.
-const toNumber = {
-  to: (value: number | null | undefined) => value,
-  from: (value: string | null) => (value === null ? null : Number(value)),
-};
 
 @Entity({ name: 'organizations' })
 export class OrganizationEntity {

@@ -13,7 +13,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator.js';
+import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface.js';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { PermissionsGuard } from '../../common/guards/permissions.guard.js';
 import { CreateEmployeeDto } from './dto/create-employee.dto.js';
@@ -28,8 +30,11 @@ export class EmployeesController {
 
   @Post()
   @RequirePermissions('employees.create')
-  create(@Body() dto: CreateEmployeeDto) {
-    return this.employees.create(dto);
+  create(
+    @Body() dto: CreateEmployeeDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.employees.create(dto, user.id);
   }
 
   @Get()
@@ -49,14 +54,18 @@ export class EmployeesController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateEmployeeDto,
+    @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.employees.update(id, dto);
+    return this.employees.update(id, dto, user.id);
   }
 
   @Delete(':id')
   @RequirePermissions('employees.delete')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.employees.remove(id);
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.employees.remove(id, user.id);
   }
 }
